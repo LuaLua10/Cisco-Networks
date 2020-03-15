@@ -1,0 +1,6 @@
+FastEthernet0 Connection:(default port)
+
+   Link-local IPv6 Address.........: FE80::2E0:A3FF:FEA3:ECDB
+   IP Address......................: 192.168.10.1
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 0.0.0.0
