@@ -70,6 +70,8 @@ interface Serial0/0/0
 interface Serial0/0/1
  bandwidth 128
  ip address 192.168.23.2 255.255.255.252
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 2 md5 Cisco123
 !
 interface Vlan1
  no ip address

@@ -69,6 +69,8 @@ interface Serial0/0/0
  bandwidth 128
  ip address 192.168.12.1 255.255.255.252
  clock rate 128000
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 2 md5 Cisco123
 !
 interface Serial0/0/1
  no ip address
