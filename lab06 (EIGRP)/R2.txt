@@ -1,0 +1,101 @@
+Using 1136 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R2
+!
+!
+!
+enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524881P-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ bandwidth 2000
+ ip address 10.1.1.2 255.255.255.252
+!
+interface Serial0/1/1
+ bandwidth 2000
+ ip address 10.2.2.2 255.255.255.252
+ clock rate 2000000
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router eigrp 10
+ passive-interface GigabitEthernet0/0
+ network 192.168.2.0
+ network 10.1.1.0 0.0.0.3
+ network 10.2.2.0 0.0.0.3
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CAttention. Unauthorized users are not allowed.^C
+!
+!
+!
+!
+!
+line con 0
+ password cisco
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ password cisco
+ logging synchronous
+ login
+!
+!
+!
+end
