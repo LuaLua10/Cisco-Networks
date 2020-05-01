@@ -1,0 +1,13 @@
+FastEthernet0 Connection:(default port)
+
+   Link-local IPv6 Address.........: FE80::2E0:B0FF:FE55:B2B2
+   IP Address......................: 192.168.2.3
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 192.168.2.1
+
+Bluetooth Connection:
+
+   Link-local IPv6 Address.........: ::
+   IP Address......................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: 0.0.0.0
