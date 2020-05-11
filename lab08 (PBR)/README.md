@@ -30,27 +30,27 @@
 
 > 
 > ip access-list standard VLAN_10
->  permit 101.1.1.0 0.0.0.255
+> permit 101.1.1.0 0.0.0.255
 > ip access-list standard VLAN_11
->  permit 101.1.2.0 0.0.0.255
+> permit 101.1.2.0 0.0.0.255
 > 
 > ip sla auto discovery
 > ip sla 1
->  icmp-echo 52.0.0.25 source-interface Ethernet0/0
->  frequency 15
+> icmp-echo 52.0.0.25 source-interface Ethernet0/0
+> frequency 15
 > ip sla schedule 1 life forever start-time now
 > ip sla 2
->  icmp-echo 52.0.0.29 source-interface Ethernet0/1
->  frequency 15
+> icmp-echo 52.0.0.29 source-interface Ethernet0/1
+> frequency 15
 > ip sla schedule 2 life forever start-time now
 > 
 > route-map PBR1 permit 10
->  match ip address VLAN_10
->  set ip next-hop verify-availability 52.0.0.25 1 track 1
+> match ip address VLAN_10
+> set ip next-hop verify-availability 52.0.0.25 1 track 1
 > 
 > route-map PBR1 permit 20
->  match ip address VLAN_11
->  set ip next-hop verify-availability 52.0.0.29 2 track 2
+> match ip address VLAN_11
+> set ip next-hop verify-availability 52.0.0.29 2 track 2
 > 
 
 Для сетей в офисе Лабытнанги будет задан маршрут по умолчанию через маршрутизатор R25 (e0/0).
