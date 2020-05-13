@@ -89,7 +89,7 @@ Device ID                       : 0cd9.96d2.3580
 Configuration last modified by 0.0.0.0 at 0-0-00 00:00:00
 
 Feature VLAN:
---------------
+
 VTP Operating Mode                : Client
 Maximum VLANs supported locally   : 255
 Number of existing VLANs          : 5
@@ -103,54 +103,11 @@ MD5 digest                        : 0x8B 0x58 0x3D 0x9D 0x64 0xBE 0xD5 0xF6
 #### Динамический магистральный канал между S1 и S2
 S1(config)# interface f0/1
 S1(config-if)# switchport mode dynamic desirable
-S1# show interface trunk
-
-Port        Mode             Encapsulation  Status        Native vlan
-Fa0/1       desirable        802.1q         trunking      1
-
-Port        Vlans allowed on trunk
-Fa0/1       1-4094
-
-Port        Vlans allowed and active in management domain
-Fa0/1       1
-
-Port        Vlans in spanning tree forwarding state and not pruned
-Fa0/1       none
-
-S2# show interfaces trunk
-
-Port        Mode             Encapsulation  Status        Native vlan
-Fa0/1       auto             802.1q         trunking      1
-
-Port        Vlans allowed on trunk
-Fa0/1       1-4094
-
-Port        Vlans allowed and active in management domain
-Fa0/1       1
-
-Port        Vlans in spanning tree forwarding state and not pruned
-Fa0/1       1
 
 #### Между коммутаторами S1 и S3 статический магистральный канал
 S1(config)# interface f0/3
 S1(config-if)# switchport mode trunk
 S1# show interface trunk
-
-Port        Mode             Encapsulation  Status        Native vlan
-Fa0/1       desirable        802.1q         trunking      1
-Fa0/3       on               802.1q         trunking      1
-
-Port        Vlans allowed on trunk
-Fa0/1       1-4094
-Fa0/3       1-4094
-
-Port        Vlans allowed and active in management domain
-Fa0/1       1
-Fa0/3       1
-
-Port        Vlans in spanning tree forwarding state and not pruned
-Fa0/1       none
-Fa0/3       none
 
 #### Постоянная магистраль между коммутаторами S2 и S3
 S2(config)# interface e0/1
@@ -173,21 +130,6 @@ S2(config-vlan)# name Yellow
 S2(config-vlan)# vlan 99
 S2(config-vlan)# name Management
 S2(config-vlan)# end
-S2# show vlan brief
-
-VLAN Name                             Status    Ports
----- -------------------------------- --------- -------------------------------
-1    default                          active    Fa0/2, Fa0/4, Fa0/5, Fa0/6
-                                                Fa0/7, Fa0/8, Fa0/9, Fa0/10
-                                                Fa0/11, Fa0/12, Fa0/13, Fa0/14
-                                                Fa0/15, Fa0/16, Fa0/17, Fa0/18
-                                                Fa0/19, Fa0/20, Fa0/21, Fa0/22
-                                                Fa0/23, Fa0/24, Gi0/1, Gi0/2
-10   Red                              active
-20   Blue                             active
-30   Yellow                           active
-99   Management                       active
-<выходные данные опущены>
 
 #### Назначим порты сетям VLAN
 S1(config)# interface f0/6
@@ -231,48 +173,12 @@ d. Отправьте ping-запрос с коммутатора S2 на ком
 S1(config)# vtp mode transparent
 Setting device to VTP Transparent mode for VLANS.
 S1(config)# exit
-S1# show vtp status
-VTP Version capable             : 1 to 3
-VTP version running             : 1
-VTP Domain Name                 : CCNA
-VTP Pruning Mode                : Disabled
-VTP Traps Generation            : Disabled
-Device ID                       : 0cd9.96e2.3d00
-Configuration last modified by 0.0.0.0 at 3-1-93 02:36:11
-
-Feature VLAN:
---------------
-VTP Operating Mode                : Transparent
-Maximum VLANs supported locally   : 255
-Number of existing VLANs          : 9
-Configuration Revision            : 0
-MD5 digest                        : 0xB2 0x9A 0x11 0x5B 0xBF 0x2E 0xBF 0xAA
-                                    0x31 0x18 0xFF 0x2C 0x5E 0x54 0x0A 0xB7
 
 #### Настраиваем сеть VLAN расширенного диапазона на коммутаторе S1
 S1# conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
 S1(config)# vlan 2000
 S1(config-vlan)# end
-S1# show vlan brief
-
-VLAN Name                             Status    Ports
----- -------------------------------- --------- -------------------------------
-1    default                          active    Fa0/2, Fa0/4, Fa0/5, Fa0/7
-                                                Fa0/8, Fa0/9, Fa0/10, Fa0/11
-                                                Fa0/12, Fa0/13, Fa0/14, Fa0/15
-                                                Fa0/16, Fa0/17, Fa0/18, Fa0/19
-                                                Fa0/20, Fa0/21, Fa0/22, Fa0/23
-                                                Fa0/24, Gi0/1, Gi0/2
-10   Red                              active    Fa0/6
-20   Blue                             active
-30   Yellow                           active
-99   Management                       active
-1002 fddi-default                     act/unsup
-1003 token-ring-default               act/unsup
-1004 fddinet-default                  act/unsup
-1005 trnet-default                    act/unsup
-2000 VLAN2000                         active
 
 Вопросы для повторения
 ------
