@@ -65,12 +65,217 @@ VLAN и магистралями. Протокол VTP позволяет се�
 
 -   Кабели Ethernet, расположенные в соответствии с топологией
 
+Часть 1. Настройка VTP
+------
+
+#### Настроить S2 в качестве сервера VTP в домене CCNA с паролем cisco.
+S2(config)# vtp domain CCNA
+S2(config)# vtp mode server
+S2(config)# vtp password cisco
+
+#### Настройте S1 и S3 в качестве клиентов VTP в домене CCNA с паролем cisco.
+S1(config)# vtp domain CCNA
+S1(config)# vtp mode client
+S1(config)# vtp password cisco
+
+#### Проверьте конфигурации VTP, введя команду show vtp status на всех коммутаторах.
+S3# show vtp status
+VTP Version capable             : 1 to 3
+VTP version running             : 1
+VTP Domain Name                 : CCNA
+VTP Pruning Mode                : Disabled
+VTP Traps Generation            : Disabled
+Device ID                       : 0cd9.96d2.3580
+Configuration last modified by 0.0.0.0 at 0-0-00 00:00:00
+
+Feature VLAN:
+--------------
+VTP Operating Mode                : Client
+Maximum VLANs supported locally   : 255
+Number of existing VLANs          : 5
+Configuration Revision            : 0
+MD5 digest                        : 0x8B 0x58 0x3D 0x9D 0x64 0xBE 0xD5 0xF6
+                                    0x62 0xCB 0x4B 0x50 0xE5 0x9C 0x6F 0xF6
+
+Часть 2:	Настройка динамического протокола транкинга (DTP)
+------
+
+#### Динамический магистральный канал между S1 и S2
+S1(config)# interface f0/1
+S1(config-if)# switchport mode dynamic desirable
+S1# show interface trunk
+
+Port        Mode             Encapsulation  Status        Native vlan
+Fa0/1       desirable        802.1q         trunking      1
+
+Port        Vlans allowed on trunk
+Fa0/1       1-4094
+
+Port        Vlans allowed and active in management domain
+Fa0/1       1
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       none
+
+S2# show interfaces trunk
+
+Port        Mode             Encapsulation  Status        Native vlan
+Fa0/1       auto             802.1q         trunking      1
+
+Port        Vlans allowed on trunk
+Fa0/1       1-4094
+
+Port        Vlans allowed and active in management domain
+Fa0/1       1
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       1
+
+#### Между коммутаторами S1 и S3 статический магистральный канал
+S1(config)# interface f0/3
+S1(config-if)# switchport mode trunk
+S1# show interface trunk
+
+Port        Mode             Encapsulation  Status        Native vlan
+Fa0/1       desirable        802.1q         trunking      1
+Fa0/3       on               802.1q         trunking      1
+
+Port        Vlans allowed on trunk
+Fa0/1       1-4094
+Fa0/3       1-4094
+
+Port        Vlans allowed and active in management domain
+Fa0/1       1
+Fa0/3       1
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       none
+Fa0/3       none
+
+#### Постоянная магистраль между коммутаторами S2 и S3
+S2(config)# interface e0/1
+S2(config-if)# switchport mode trunk
+
+Часть 3:	Добавление сетей VLAN и назначение портов
+------
+
+#### На коммутаторе S1 добавляем сеть VLAN 10.
+S1(config)# vlan 10
+В режиме VTP клиента нельзя создавать локальную базу VLAN.
+
+#### Добавляем следующие сети VLAN на коммутаторе S2
+S2(config)# vlan 10
+S2(config-vlan)# name Red
+S2(config-vlan)# vlan 20
+S2(config-vlan)# name Blue
+S2(config-vlan)# vlan 30
+S2(config-vlan)# name Yellow
+S2(config-vlan)# vlan 99
+S2(config-vlan)# name Management
+S2(config-vlan)# end
+S2# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/2, Fa0/4, Fa0/5, Fa0/6
+                                                Fa0/7, Fa0/8, Fa0/9, Fa0/10
+                                                Fa0/11, Fa0/12, Fa0/13, Fa0/14
+                                                Fa0/15, Fa0/16, Fa0/17, Fa0/18
+                                                Fa0/19, Fa0/20, Fa0/21, Fa0/22
+                                                Fa0/23, Fa0/24, Gi0/1, Gi0/2
+10   Red                              active
+20   Blue                             active
+30   Yellow                           active
+99   Management                       active
+<выходные данные опущены>
+
+#### Назначим порты сетям VLAN
+S1(config)# interface f0/6
+S1(config-if)# switchport mode access
+S1(config-if)# switchport access vlan 10
+S2(config)# interface f0/18
+S2(config-if)# switchport mode access
+S2(config-if)# switchport access vlan 20
+S3(config)# interface f0/18
+S3(config-if)# switchport mode access
+S3(config-if)# switchport access vlan 10
+
+#### Настроим IP адреса на коммутаторах
+S1(config)# interface vlan 99
+S1(config-if)# ip address 192.168.99.1 255.255.255.0
+S1(config-fi)# no shutdown
+S2(config)# interface vlan 99
+S2(config-if)# ip address 192.168.99.2 255.255.255.0
+S2(config-fi)# no shutdown
+S3(config)# interface vlan 99
+S3(config-if)# ip address 192.168.99.3 255.255.255.0
+S3(config-fi)# no shutdown
+
+#### Проверка наличие сквозного соединения
+a. Отправьте ping-запрос с компьютера PC-B на PC-A и проверьте результат. Поясните ответ.
+Пинг не проходит, по причине нахождения портов в разных VLAN.
+
+b. Отправьте ping-запрос с компьютера PC-A на PC-C и проверьте результат. Поясните ответ.
+Пинг проходит, устройства находятся в одном VLAN.
+
+c. Отправьте ping-запрос с коммутатора S1 на компьютер PC-A. Была ли проверка успешной? Поясните ответ.
+Пинг не проходит, т.к. SVI коммутатора находится в другом VLAN.
+
+d. Отправьте ping-запрос с коммутатора S2 на коммутатор S1. Была ли проверка успешной? Поясните ответ.
+Пинг проходит, оба коммутатора находятся в управляющем VLAN.
+
+Часть 4:	Настройка сети VLAN расширенного диапазона
+------
+
+#### Переводим VTP на коммутаторе S1 в прозрачный режим
+S1(config)# vtp mode transparent
+Setting device to VTP Transparent mode for VLANS.
+S1(config)# exit
+S1# show vtp status
+VTP Version capable             : 1 to 3
+VTP version running             : 1
+VTP Domain Name                 : CCNA
+VTP Pruning Mode                : Disabled
+VTP Traps Generation            : Disabled
+Device ID                       : 0cd9.96e2.3d00
+Configuration last modified by 0.0.0.0 at 3-1-93 02:36:11
+
+Feature VLAN:
+--------------
+VTP Operating Mode                : Transparent
+Maximum VLANs supported locally   : 255
+Number of existing VLANs          : 9
+Configuration Revision            : 0
+MD5 digest                        : 0xB2 0x9A 0x11 0x5B 0xBF 0x2E 0xBF 0xAA
+                                    0x31 0x18 0xFF 0x2C 0x5E 0x54 0x0A 0xB7
+
+#### Настраиваем сеть VLAN расширенного диапазона на коммутаторе S1
+S1# conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S1(config)# vlan 2000
+S1(config-vlan)# end
+S1# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/2, Fa0/4, Fa0/5, Fa0/7
+                                                Fa0/8, Fa0/9, Fa0/10, Fa0/11
+                                                Fa0/12, Fa0/13, Fa0/14, Fa0/15
+                                                Fa0/16, Fa0/17, Fa0/18, Fa0/19
+                                                Fa0/20, Fa0/21, Fa0/22, Fa0/23
+                                                Fa0/24, Gi0/1, Gi0/2
+10   Red                              active    Fa0/6
+20   Blue                             active
+30   Yellow                           active
+99   Management                       active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+2000 VLAN2000                         active
+
 Вопросы для повторения
-----------------------
+------
+#### Каковы преимущества и недостатки использования VTP?
+Основное преимущество использования протокола VTP заключается в единой базе VLAN на всех коммутаторах. Недостатком данного протока является его небезопасность (устройство с меньшим номером конфигурации в сети может выступить в роле VTP сервера и зачистить базы VLAN на всех коммутаторах).
 
-Каковы преимущества и недостатки использования VTP?
-
-*Основное преимущество использования протокола VTP заключается в единой базе
-VLAN на всех коммутаторах. Недостатком данного протока является его
-небезопасность (устройство с меньшим номером конфигурации в сети может выступить
-в роле VTP сервера и зачистить базы VLAN на всех коммутаторах).*

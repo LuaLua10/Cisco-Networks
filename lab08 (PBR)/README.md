@@ -29,7 +29,7 @@
 ###### Конфигурация PBA на R28:
 
  
-*ip access-list standard VLAN_10*
+*ip access-list standard VLAN_10* 
 *permit 101.1.1.0 0.0.0.255*
 *ip access-list standard VLAN_11*
 *permit 101.1.2.0 0.0.0.255*
