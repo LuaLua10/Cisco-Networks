@@ -73,6 +73,124 @@ Ethernet между коммутаторами в соответствии с 
 
 -   Кабели Ethernet, расположенные в соответствии с топологией
 
+Часть 1. Настройка базовых параметров коммутатора
+---------
+
+####Настроем базовые параметры каждого коммутатора
+
+S1-3(config)#no ip domain-lookup
+S1-3(config)#enable secret class
+S1-3(config)#line console 0
+S1-3(config)#password cisco
+S1-3(config)#login
+S1-3(config)#logging synchronous
+S1-3(config)#line vty 0 4
+S1-3(config)#password cisco
+S1-3(config)#login
+S1-3(config)#logging synchronous
+S1-3(config)#banner motd #Attention. Unauthorized users are not allowed.#
+S1-3(config)# vlan 99
+S1-3(config-vlan)# name Management
+S1-3(config)# vlan 10
+S1-3(config-vlan)# name Staff
+
+S1(config)# interface f0/6
+S1(config-if)# switchport mode access
+S1(config-if)# switchport access vlan 10
+S1(config)# interface vlan 99
+S1(config-if)# ip address 192.168.99.11 255.255.255.0
+
+S2(config)# interface f0/18
+S2(config-if)# switchport mode access
+S2(config-if)# switchport access vlan 10
+S2(config)# interface vlan 99
+S2(config-if)# ip address 192.168.99.12 255.255.255.0
+
+S3(config)# interface f0/18
+S3(config-if)# switchport mode access
+S3(config-if)# switchport access vlan 10
+S3(config)# interface vlan 99
+S3(config-if)# ip address 192.168.99.13 255.255.255.0
+
+Часть 2. Настройка PAgP
+---------
+
+#### Настраим PAgP на S1 и S3
+
+S1(config)# interface range f0/3-4
+S1(config-if-range)# channel-group 1 mode desirable
+Creating a port-channel interface Port-channel 1
+
+S1(config-if-range)# no shutdown
+
+S3(config)# interface range f0/3-4
+S3(config-if-range)# channel-group 1 mode auto
+Creating a port-channel interface Port-channel 1
+
+S3(config-if-range)# no shutdown
+
+*Что означают флаги «SU» и «P» в сводных данных по Ethernet?*
+*SU – Layer2 in user*
+*P – bundled in port-channel*
+
+#### Настроим транковые порты
+
+S1(config)# interface port-channel 1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk native vlan 99
+
+S3(config)# interface port-channel 1
+S3(config-if)# switchport mode trunk
+S3(config-if)# switchport trunk native vlan 99
+
+##### Выполните команды show run interface идентификатор-интерфейса на S1 и S3. Какие команды включены в список для интерфейсов F0/3 и F0/4 на обоих коммутаторах? Сравните результаты с текущей конфигурацией для интерфейса Po1. Запишите наблюдения.
+*Все команды симметрично скопировались с интерфейса Po1 на интерфейсы F0/3-4. Единственное отличие, что к интерфейсам F0/3-4 добавлена еще одна команда, “channel-group 1 mode auto”.*
+##### Выполните команды show interfaces trunk и show spanning-tree на S1 и S3. Какой транковый порт включен в список? Какая используется сеть native VLAN? Какой вывод можно сделать на основе выходных данных?
+*Транковым портом является Po1, Native vlan 99. Вывод: коммутатор работает с виртуальным интерфейсом Po1, а не с двумя физическими F0/3 и F0/4.*
+##### Какие значения стоимости и приоритета порта для агрегированного канала отображены в выходных данных команды show spanning-tree?
+*Стоимость равна *9. Приоритет равен 128.28.*
+
+Часть 3. Настройка LACP
+---------
+
+#### Настроим LACP между S1 и S2
+
+S1(config)# interface range f0/1-2
+S1(config-if-range)# switchport mode trunk
+S1(config-if-range)# switchport trunk native vlan 99
+S1(config-if-range)# channel-group 2 mode active
+Creating a port-channel interface Port-channel 2
+
+S1(config-if-range)# no shutdown
+
+S2(config)# interface range f0/1-2
+S2(config-if-range)# switchport mode trunk
+S2(config-if-range)# switchport trunk native vlan 99
+S2(config-if-range)# channel-group 2 mode passive
+Creating a port-channel interface Port-channel 2
+
+S2(config-if-range)# no shutdown
+
+##### Какой протокол использует Po2 для агрегирования каналов? Какие порты агрегируются для образования Po2? Запишите команду, используемую для проверки.
+*Интерфейс Po2 использует протокол LACP. Fa0/1-2 агрегируются для образования Po2. Команда, используемая для проверки: show etherchannel summary.*
+
+#### Настроим LACP между S2 и S3
+
+S2(config)# interface range f0/3-4
+S2(config-if-range)# switchport mode trunk
+S2(config-if-range)# switchport trunk native vlan 99
+S2(config-if-range)# channel-group 3 mode active
+Creating a port-channel interface Port-channel 3
+S2(config-if-range)# no shutdown
+
+S3(config)# interface range f0/1-2
+S3(config-if-range)# switchport mode trunk
+S3(config-if-range)# switchport trunk native vlan 99
+S3(config-if-range)# channel-group 3 mode passive
+Creating a port-channel interface Port-channel 3
+
+S3(config-if-range)# no shutdown
+
 Вопросы для повторения
 ---------
 Что может препятствовать образованию каналов EtherChannel?
