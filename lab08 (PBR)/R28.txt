@@ -1,6 +1,6 @@
-Current configuration : 2560 bytes
+Current configuration : 2726 bytes
 !
-! Last configuration change at 12:29:54 EET Mon May 11 2020
+! Last configuration change at 17:14:50 EET Sat May 16 2020
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -84,12 +84,14 @@ interface Ethernet0/2
 interface Ethernet0/2.10
  encapsulation dot1Q 10
  ip address 101.1.1.1 255.255.255.0
+ ip policy route-map PBR1
  ipv6 address FE80::1 link-local
  ipv6 address 2001:AAAA:1011:2::1/64
 !
 interface Ethernet0/2.11
  encapsulation dot1Q 11
  ip address 101.1.2.1 255.255.255.0
+ ip policy route-map PBR1
  ipv6 address FE80::1 link-local
  ipv6 address 2001:AAAA:1011:3::1/64
 !
@@ -137,10 +139,12 @@ ip sla schedule 2 life forever start-time now
 route-map PBR1 permit 10
  match ip address VLAN_10
  set ip next-hop verify-availability 52.0.0.25 1 track 1
+ set ip next-hop verify-availability 52.0.0.29 2 track 2
 !
 route-map PBR1 permit 20
  match ip address VLAN_11
- set ip next-hop verify-availability 52.0.0.29 2 track 2
+ set ip next-hop verify-availability 52.0.0.29 1 track 2
+ set ip next-hop verify-availability 52.0.0.25 2 track 1
 !
 !
 !

@@ -26,35 +26,44 @@
 Сеть 101.1.2.0/24 будет направляться через Up-Link e0/1 сеть 52.0.0.28/30.
 Для отслеживания состояния линка будет использована технология IP SLA. Она будет сконфигурирована на маршрутизаторе R28.
 
-#### Конфигурация PBA на R28:
+#### Конфигурация PBR на R28:
 
- 
-	*ip access-list standard VLAN_10* 
-	*permit 101.1.1.0 0.0.0.255*
-	*ip access-list standard VLAN_11*
-	*permit 101.1.2.0 0.0.0.255*
+'''
+	R28(config)# ip access-list standard VLAN_10
+	R28(config)# permit 101.1.1.0 0.0.0.255
+	R28(config)# ip access-list standard VLAN_11
+	R28(config)# permit 101.1.2.0 0.0.0.255
 
-	*ip sla auto discovery*
-	*ip sla 1*
-	*icmp-echo 52.0.0.25 source-interface Ethernet0/0*
-	*frequency 15*
-	*ip sla schedule 1 life forever start-time now*
-	*ip sla 2*
-	*icmp-echo 52.0.0.29 source-interface Ethernet0/1*
-	*frequency 15*
-	*ip sla schedule 2 life forever start-time now*
+	R28(config)# ip sla auto discovery
+	R28(config)# ip sla 1
+	R28(config)# icmp-echo 52.0.0.25 source-interface Ethernet0/0
+	R28(config)# frequency 15
+	R28(config)# ip sla schedule 1 life forever start-time now
+	R28(config)# ip sla 2
+	R28(config)# icmp-echo 52.0.0.29 source-interface Ethernet0/1
+	R28(config)# frequency 15
+	R28(config)# ip sla schedule 2 life forever start-time now
 
-	*route-map PBR1 permit 10*
-	*match ip address VLAN_10*
-	*set ip next-hop verify-availability 52.0.0.25 1 track 1*
+	R28(config)# route-map PBR1 permit 10
+	R28(config)# match ip address VLAN_10
+	R28(config)# set ip next-hop verify-availability 52.0.0.25 1 track 1
+	R28(config)# set ip next-hop verify-availability 52.0.0.29 2 track 2
+	R28(config)# route-map PBR1 permit 20
+	R28(config)# match ip address VLAN_11
+	R28(config)# set ip next-hop verify-availability 52.0.0.29 2 track 2
+	R28(config)# set ip next-hop verify-availability 52.0.0.25 2 track 1
+	
+	R28(config)# interface Ethernet0/2.10
+	R28(config)# ip policy route-map PBR1
 
-	*route-map PBR1 permit 20*
-	*match ip address VLAN_11*
-	*set ip next-hop verify-availability 52.0.0.29 2 track 2*
- 
+	R28(config)# interface Ethernet0/2.11
+	R28(config)# ip policy route-map PBR1
+
+'''
 
 Для сетей в офисе Лабытнанги будет задан маршрут по умолчанию через маршрутизатор R25 (e0/0).
 
 #### Конфигурация маршрута по умолчанию на R27:
 
-	*ip route 0.0.0.0 0.0.0.0 52.0.0.33*
+	'''R27(config)# ip route 0.0.0.0 0.0.0.0 52.0.0.33
+	'''
