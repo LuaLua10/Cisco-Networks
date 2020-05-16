@@ -28,38 +28,37 @@
 
 #### Конфигурация PBR на R28:
 
-'''
-	R28(config)# ip access-list standard VLAN_10
-	R28(config)# permit 101.1.1.0 0.0.0.255
-	R28(config)# ip access-list standard VLAN_11
-	R28(config)# permit 101.1.2.0 0.0.0.255
+```
+R28(config)# ip access-list standard VLAN_10
+R28(config)# permit 101.1.1.0 0.0.0.255
+R28(config)# ip access-list standard VLAN_11
+R28(config)# permit 101.1.2.0 0.0.0.255
 
-	R28(config)# ip sla auto discovery
-	R28(config)# ip sla 1
-	R28(config)# icmp-echo 52.0.0.25 source-interface Ethernet0/0
-	R28(config)# frequency 15
-	R28(config)# ip sla schedule 1 life forever start-time now
-	R28(config)# ip sla 2
-	R28(config)# icmp-echo 52.0.0.29 source-interface Ethernet0/1
-	R28(config)# frequency 15
-	R28(config)# ip sla schedule 2 life forever start-time now
+R28(config)# ip sla auto discovery
+R28(config)# ip sla 1
+R28(config)# icmp-echo 52.0.0.25 source-interface Ethernet0/0
+R28(config)# frequency 15
+R28(config)# ip sla schedule 1 life forever start-time now
+R28(config)# ip sla 2
+R28(config)# icmp-echo 52.0.0.29 source-interface Ethernet0/1
+R28(config)# frequency 15
+R28(config)# ip sla schedule 2 life forever start-time now
 
-	R28(config)# route-map PBR1 permit 10
-	R28(config)# match ip address VLAN_10
-	R28(config)# set ip next-hop verify-availability 52.0.0.25 1 track 1
-	R28(config)# set ip next-hop verify-availability 52.0.0.29 2 track 2
-	R28(config)# route-map PBR1 permit 20
-	R28(config)# match ip address VLAN_11
-	R28(config)# set ip next-hop verify-availability 52.0.0.29 2 track 2
-	R28(config)# set ip next-hop verify-availability 52.0.0.25 2 track 1
-	
-	R28(config)# interface Ethernet0/2.10
-	R28(config)# ip policy route-map PBR1
+R28(config)# route-map PBR1 permit 10
+R28(config)# match ip address VLAN_10
+R28(config)# set ip next-hop verify-availability 52.0.0.25 1 track 1
+R28(config)# set ip next-hop verify-availability 52.0.0.29 2 track 2
+R28(config)# route-map PBR1 permit 20
+R28(config)# match ip address VLAN_11
+R28(config)# set ip next-hop verify-availability 52.0.0.29 2 track 2
+R28(config)# set ip next-hop verify-availability 52.0.0.25 2 track 1
 
-	R28(config)# interface Ethernet0/2.11
-	R28(config)# ip policy route-map PBR1
+R28(config)# interface Ethernet0/2.10
+R28(config)# ip policy route-map PBR1
 
-'''
+R28(config)# interface Ethernet0/2.11
+R28(config)# ip policy route-map PBR1
+```
 
 Для сетей в офисе Лабытнанги будет задан маршрут по умолчанию через маршрутизатор R25 (e0/0).
 
