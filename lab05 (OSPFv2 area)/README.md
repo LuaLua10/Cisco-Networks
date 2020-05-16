@@ -320,7 +320,8 @@ R3:
 #### Просмотрим базы данных LSDB на всех маршрутизаторах.
 
 R1:
-	OSPF Router with ID (1.1.1.1) (Process ID 1)
+	
+	         OSPF Router with ID (1.1.1.1) (Process ID 1)
 	
 	                Router Link States (Area 0)
 	
