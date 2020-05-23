@@ -68,7 +68,7 @@ interface GigabitEthernet0/1
 interface Serial0/0/0
  bandwidth 64
  ip address 192.168.13.2 255.255.255.252
- ip bandwidth-percent eigrp 1 75
+ ip bandwidth-percent eigrp 1 40
  ip hello-interval eigrp 1 60
  ip hold-time eigrp 1 180
  clock rate 2000000
