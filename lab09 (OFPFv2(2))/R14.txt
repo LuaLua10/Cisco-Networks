@@ -81,11 +81,13 @@ interface Ethernet0/3
 !
 router ospf 1
  router-id 14.14.14.14
+ area 10 stub
  area 101 stub no-summary
  passive-interface Ethernet0/2
  network 100.1.0.0 0.0.0.3 area 101
- network 100.1.0.4 0.0.0.3 area 0
- network 100.1.0.8 0.0.0.3 area 0
+ network 100.1.0.4 0.0.0.3 area 10
+ network 100.1.0.8 0.0.0.3 area 10
+ network 101.0.0.0 0.0.0.3 area 0
 !
 ip forward-protocol nd
 !
