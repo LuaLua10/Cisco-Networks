@@ -1,0 +1,149 @@
+Current configuration : 2435 bytes
+!
+! Last configuration change at 15:04:25 EET Thu Jun 11 2020
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname SW5
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$hHd0$2g4cOFZslMA1Gojsc.9w70
+!
+no aaa new-model
+clock timezone EET 2 0
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/2
+!
+interface Ethernet0/3
+!
+interface Ethernet1/0
+ no switchport
+ ip address 100.1.0.38 255.255.255.252
+ duplex auto
+ ipv6 address FE80::5 link-local
+ ipv6 address 2001:AAAA:1001:10::2/64
+ ipv6 ospf 10 area 10
+!
+interface Ethernet1/1
+ no switchport
+ ip address 100.1.0.30 255.255.255.252
+ duplex auto
+ ipv6 address FE80::5 link-local
+ ipv6 address 2001:AAAA:1001:8::2/64
+ ipv6 ospf 10 area 10
+!
+interface Ethernet1/2
+!
+interface Ethernet1/3
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan5
+ ip address 100.1.0.66 255.255.255.192
+ ipv6 address FE80::5 link-local
+ ipv6 address 2001:AAAA:1001:11::2/64
+ ipv6 ospf 10 area 10
+!
+interface Vlan10
+ ip address 100.1.1.2 255.255.255.0
+ ipv6 address FE80::5 link-local
+ ipv6 address 2001:AAAA:1001:12::2/64
+ ipv6 ospf 10 area 10
+!
+interface Vlan11
+ ip address 100.1.2.1 255.255.255.0
+ ipv6 address FE80::5 link-local
+ ipv6 address 2001:AAAA:1001:13::1/64
+ ipv6 ospf 10 area 10
+!
+router ospf 1
+ router-id 5.5.5.5
+ area 10 stub
+ passive-interface default
+ no passive-interface Ethernet1/0
+ no passive-interface Ethernet1/1
+ network 100.1.0.28 0.0.0.3 area 10
+ network 100.1.0.36 0.0.0.3 area 10
+ network 100.1.0.64 0.0.0.63 area 10
+ network 100.1.1.0 0.0.0.255 area 10
+ network 100.1.2.0 0.0.0.255 area 10
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+ipv6 router ospf 10
+ router-id 5.5.5.5
+ area 10 stub
+ passive-interface default
+ no passive-interface Ethernet1/0
+ no passive-interface Ethernet1/1
+!
+!
+!
+!
+control-plane
+!
+banner motd ^CAttention. Unauthorized users are not allowed.^C
+!
+line con 0
+ password cisco
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password cisco
+ logging synchronous
+ login
+!
+!
+end
