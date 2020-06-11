@@ -1,0 +1,136 @@
+Current configuration : 1814 bytes
+!
+! Last configuration change at 23:23:42 EET Mon Jun 8 2020
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R24
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$DSlp$syOrW2e4.OWfBlmILyXzH.
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ ip address 30.1.0.6 255.255.255.252
+ ipv6 address FE80::24 link-local
+ ipv6 address 2001:AAAA:301:2::2/64
+!
+interface Ethernet0/1
+ ip address 52.0.0.5 255.255.255.252
+ ipv6 address FE80::24 link-local
+ ipv6 address 2001:AAAA:502:2::1/64
+!
+interface Ethernet0/2
+ ip address 52.0.0.2 255.255.255.252
+ ipv6 address FE80::24 link-local
+ ipv6 address 2001:AAAA:502:1::2/64
+!
+interface Ethernet0/3
+ ip address 52.0.0.17 255.255.255.252
+ ipv6 address FE80::24 link-local
+ ipv6 address 2001:AAAA:502:5::1/64
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router bgp 520
+ bgp router-id 24.24.24.24
+ bgp log-neighbor-changes
+ network 52.0.0.0 mask 255.255.255.192
+ neighbor 30.1.0.5 remote-as 301
+ neighbor 52.0.0.18 remote-as 2042
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 52.0.0.0 255.255.255.192 Null0
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CAttention. Unauthorized users are not allowed.^C
+!
+line con 0
+ password cisco
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password cisco
+ logging synchronous
+ login
+ transport input all
+!
+!
+end
