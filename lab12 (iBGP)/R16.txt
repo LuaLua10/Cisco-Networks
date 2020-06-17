@@ -1,0 +1,190 @@
+Current configuration : 3124 bytes
+!
+! Last configuration change at 21:45:38 EET Wed Jun 17 2020
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R16
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$2h53$fB/T2KqvvOVJGXRaYZSlR/
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+bridge irb
+!
+!
+!
+!
+interface Loopback0
+ ip address 16.16.16.16 255.255.255.255
+!
+interface Ethernet0/0
+ no ip address
+!
+interface Ethernet0/0.5
+ description Manag
+ encapsulation dot1Q 5
+ bridge-group 1
+!
+interface Ethernet0/0.10
+ description VID10
+ encapsulation dot1Q 10
+ bridge-group 2
+!
+interface Ethernet0/0.11
+ description VID11
+ encapsulation dot1Q 11
+ bridge-group 3
+!
+interface Ethernet0/1
+ ip address 20.42.0.6 255.255.255.252
+ ipv6 address FE80::16 link-local
+ ipv6 address 2001:AAAA:2042:2::2/64
+!
+interface Ethernet0/2
+ no ip address
+!
+interface Ethernet0/2.5
+ description Manag
+ encapsulation dot1Q 5
+ bridge-group 1
+!
+interface Ethernet0/2.10
+ description VID10
+ encapsulation dot1Q 10
+ bridge-group 2
+!
+interface Ethernet0/2.11
+ description VID11
+ encapsulation dot1Q 11
+ bridge-group 3
+!
+interface Ethernet0/3
+ ip address 20.42.0.9 255.255.255.252
+ ipv6 address FE80::16 link-local
+ ipv6 address 2001:AAAA:2042:3::1/64
+!
+interface BVI1
+ description Manag
+ ip address 20.42.1.2 255.255.255.0
+ ipv6 address FE80::16 link-local
+ ipv6 address 2001:AAAA:2042:4::2/64
+ vrrp 3 description VRRP_Manag
+ vrrp 3 ip 20.42.1.1
+ vrrp 3 authentication cisco
+!
+interface BVI2
+ description VID10
+ ip address 20.42.2.2 255.255.255.0
+ ipv6 address FE80::16 link-local
+ ipv6 address 2001:AAAA:2042:5::2/64
+ vrrp 1 description VRRP_VID10
+ vrrp 1 ip 20.42.2.1
+ vrrp 1 authentication cisco
+!
+interface BVI3
+ description VID11
+ ip address 20.42.3.1 255.255.255.0
+ ipv6 address FE80::16 link-local
+ ipv6 address 2001:AAAA:2042:6::2/64
+ vrrp 2 description VRRP_VID11
+ vrrp 2 ip 20.42.3.1
+ vrrp 2 authentication cisco
+!
+router bgp 2042
+ bgp router-id 16.16.16.16
+ bgp log-neighbor-changes
+ network 20.42.0.0 mask 255.255.252.0
+ network 20.42.1.0 mask 255.255.255.0
+ network 20.42.2.0 mask 255.255.255.0
+ network 20.42.3.0 mask 255.255.255.0
+ neighbor 18.18.18.18 remote-as 2042
+ neighbor 18.18.18.18 update-source Loopback0
+ neighbor 18.18.18.18 next-hop-self
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 17.17.17.17 255.255.255.255 20.42.0.5
+ip route 18.18.18.18 255.255.255.255 20.42.0.5
+ip route 20.42.0.0 255.255.252.0 Null0
+ip route 32.32.32.32 255.255.255.255 20.42.0.10
+!
+!
+!
+!
+control-plane
+!
+bridge 1 protocol ieee
+bridge 1 route ip
+bridge 2 protocol ieee
+bridge 2 route ip
+bridge 3 protocol ieee
+bridge 3 route ip
+!
+!
+!
+!
+!
+banner motd ^CAttention. Unauthorized users are not allowed.^C
+!
+line con 0
+ password cisco
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password cisco
+ logging synchronous
+ login
+ transport input all
+!
+!
+end
