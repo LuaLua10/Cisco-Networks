@@ -244,8 +244,6 @@ router ospf 1
 
 ##### Таблица маршрутизации SW4:
 
-    
-```
 SW4#show ip route ospf
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
