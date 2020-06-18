@@ -79,15 +79,21 @@ interface Ethernet0/3
  ipv6 address FE80::15 link-local
  ipv6 address 2001:AAAA:1001:6::1/64
 !
+interface Ethernet1/0
+ ip address 100.1.0.42 255.255.255.252
+ ipv6 address FE80::15 link-local
+ ipv6 address 2001:AAAA:1001:11::2/64
+!
 router ospf 1
  router-id 15.15.15.15
  area 10 stub
  area 102 filter-list prefix DEAD_area101 in
  passive-interface Ethernet0/2
- network 30.1.0.0 0.0.0.3 area 0
+ network 15.15.15.15 0.0.0.0 area 0
  network 100.1.0.12 0.0.0.3 area 10
  network 100.1.0.16 0.0.0.3 area 10
  network 100.1.0.20 0.0.0.3 area 102
+ network 100.1.0.40 0.0.0.3 area 0
 !
 ip forward-protocol nd
 !

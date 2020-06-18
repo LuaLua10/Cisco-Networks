@@ -79,15 +79,21 @@ interface Ethernet0/3
  ipv6 address FE80::14 link-local
  ipv6 address 2001:AAAA:1001:1::1/64
 !
+interface Ethernet1/0
+ ip address 100.1.0.41 255.255.255.252
+ ipv6 address FE80::14 link-local
+ ipv6 address 2001:AAAA:1001:11::1/64
+ !
 router ospf 1
  router-id 14.14.14.14
  area 10 stub
  area 101 stub no-summary
  passive-interface Ethernet0/2
+ network 14.14.14.14 0.0.0.0 area 0
  network 100.1.0.0 0.0.0.3 area 101
  network 100.1.0.4 0.0.0.3 area 10
  network 100.1.0.8 0.0.0.3 area 10
- network 101.0.0.0 0.0.0.3 area 0
+ network 100.1.0.40 0.0.0.3 area 0
 !
 ip forward-protocol nd
 !
