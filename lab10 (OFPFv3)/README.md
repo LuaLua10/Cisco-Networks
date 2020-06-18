@@ -36,17 +36,17 @@ interface Ethernet0/0
  ipv6 ospf 10 area 10
 interface Ethernet0/1
  ipv6 ospf 10 area 10
-interface Ethernet0/2
- ipv6 ospf 10 area 0
 interface Ethernet0/3
  ipv6 ospf 10 area 102
+ interface Ethernet1/0
+ ipv6 ospf 10 area 0
 ```
 
 ##### Таблица маршрутизации R15:
 
 ```
-R15#show ipv6 route ospf
-IPv6 Routing Table - default - 21 entries
+R15#show ipv6 route ospf 
+IPv6 Routing Table - default - 22 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
        H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
@@ -54,15 +54,8 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
        O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
        ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, l - LISP
-OI  ::/0 [110/21]
-     via FE80::12, Ethernet0/1
-     via FE80::13, Ethernet0/0
-OI  2001:AAAA:101:1::/64 [110/30]
-     via FE80::12, Ethernet0/1
-     via FE80::13, Ethernet0/0
-OI  2001:AAAA:1001:1::/64 [110/30]
-     via FE80::12, Ethernet0/1
-     via FE80::13, Ethernet0/0
+OI  2001:AAAA:1001:1::/64 [110/20]
+     via FE80::14, Ethernet1/0
 O   2001:AAAA:1001:2::/64 [110/20]
      via FE80::12, Ethernet0/1
 O   2001:AAAA:1001:3::/64 [110/20]
@@ -75,15 +68,14 @@ O   2001:AAAA:1001:9::/64 [110/20]
      via FE80::13, Ethernet0/0
 O   2001:AAAA:1001:10::/64 [110/20]
      via FE80::13, Ethernet0/0
-O   2001:AAAA:1001:11::/64 [110/21]
-     via FE80::12, Ethernet0/1
-     via FE80::13, Ethernet0/0
 O   2001:AAAA:1001:12::/64 [110/21]
-     via FE80::12, Ethernet0/1
      via FE80::13, Ethernet0/0
+     via FE80::12, Ethernet0/1
 O   2001:AAAA:1001:13::/64 [110/21]
-     via FE80::12, Ethernet0/1
      via FE80::13, Ethernet0/0
+     via FE80::12, Ethernet0/1
+O   2001:AAAA:1001:14::1/128 [110/10]
+     via FE80::14, Ethernet1/0
 ```
 
 ##### Конфигурация R14:
@@ -98,18 +90,18 @@ interface Ethernet0/0
  ipv6 ospf 10 area 10
 interface Ethernet0/1
  ipv6 ospf 10 area 10
-interface Ethernet0/2
- ipv6 ospf 10 area 0
 interface Ethernet0/3
  ipv6 ospf 10 area 101
+interface Ethernet1/0
+ ipv6 ospf 10 area 0
 ```
 
 
 ##### Таблица маршрутизации R14:
 
 ```
-R14#show ipv6 route ospf
-IPv6 Routing Table - default - 21 entries
+R14#show ipv6 route ospf 
+IPv6 Routing Table - default - 22 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
        H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
@@ -117,19 +109,12 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
        O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
        ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, l - LISP
-OI  ::/0 [110/21]
-     via FE80::12, Ethernet0/0
-     via FE80::13, Ethernet0/1
-OI  2001:AAAA:301:1::/64 [110/30]
-     via FE80::12, Ethernet0/0
-     via FE80::13, Ethernet0/1
 O   2001:AAAA:1001:4::/64 [110/20]
      via FE80::12, Ethernet0/0
 O   2001:AAAA:1001:5::/64 [110/20]
      via FE80::13, Ethernet0/1
-OI  2001:AAAA:1001:6::/64 [110/30]
-     via FE80::12, Ethernet0/0
-     via FE80::13, Ethernet0/1
+OI  2001:AAAA:1001:6::/64 [110/20]
+     via FE80::15, Ethernet1/0
 O   2001:AAAA:1001:7::/64 [110/20]
      via FE80::12, Ethernet0/0
 O   2001:AAAA:1001:8::/64 [110/20]
@@ -138,15 +123,14 @@ O   2001:AAAA:1001:9::/64 [110/20]
      via FE80::13, Ethernet0/1
 O   2001:AAAA:1001:10::/64 [110/20]
      via FE80::13, Ethernet0/1
-O   2001:AAAA:1001:11::/64 [110/21]
-     via FE80::12, Ethernet0/0
-     via FE80::13, Ethernet0/1
 O   2001:AAAA:1001:12::/64 [110/21]
-     via FE80::12, Ethernet0/0
      via FE80::13, Ethernet0/1
+     via FE80::12, Ethernet0/0
 O   2001:AAAA:1001:13::/64 [110/21]
-     via FE80::12, Ethernet0/0
      via FE80::13, Ethernet0/1
+     via FE80::12, Ethernet0/0
+O   2001:AAAA:1001:15::1/128 [110/10]
+     via FE80::15, Ethernet1/0
 ```
 
 #### Настроим OSPFv3 на маршрутизаторах R12 и R13
@@ -170,7 +154,7 @@ interface Ethernet0/3
 ##### Таблица маршрутизации R12:
 
 ```
-R12#show ipv6 route ospf
+R12#show ipv6 route ospf 
 IPv6 Routing Table - default - 21 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
@@ -180,12 +164,8 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
        ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, l - LISP
 OI  ::/0 [110/11]
-     via FE80::14, Ethernet0/2
      via FE80::15, Ethernet0/3
-OI  2001:AAAA:101:1::/64 [110/20]
      via FE80::14, Ethernet0/2
-OI  2001:AAAA:301:1::/64 [110/20]
-     via FE80::15, Ethernet0/3
 OI  2001:AAAA:1001:1::/64 [110/20]
      via FE80::14, Ethernet0/2
 O   2001:AAAA:1001:3::/64 [110/20]
@@ -199,14 +179,18 @@ O   2001:AAAA:1001:9::/64 [110/20]
 O   2001:AAAA:1001:10::/64 [110/20]
      via FE80::5, Ethernet0/1
 O   2001:AAAA:1001:11::/64 [110/11]
-     via FE80::4, Ethernet0/0
      via FE80::5, Ethernet0/1
+     via FE80::4, Ethernet0/0
 O   2001:AAAA:1001:12::/64 [110/11]
-     via FE80::4, Ethernet0/0
      via FE80::5, Ethernet0/1
+     via FE80::4, Ethernet0/0
 O   2001:AAAA:1001:13::/64 [110/11]
-     via FE80::4, Ethernet0/0
      via FE80::5, Ethernet0/1
+     via FE80::4, Ethernet0/0
+OI  2001:AAAA:1001:14::1/128 [110/10]
+     via FE80::14, Ethernet0/2
+OI  2001:AAAA:1001:15::1/128 [110/10]
+     via FE80::15, Ethernet0/3
 ```
 
 ##### Конфигурация R13:
@@ -228,7 +212,7 @@ interface Ethernet0/3
 ##### Таблица маршрутизации R13:
 
 ```
-R13#show ipv6 route ospf
+R13#show ipv6 route ospf 
 IPv6 Routing Table - default - 21 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
@@ -240,10 +224,6 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
 OI  ::/0 [110/11]
      via FE80::15, Ethernet0/2
      via FE80::14, Ethernet0/3
-OI  2001:AAAA:101:1::/64 [110/20]
-     via FE80::14, Ethernet0/3
-OI  2001:AAAA:301:1::/64 [110/20]
-     via FE80::15, Ethernet0/2
 OI  2001:AAAA:1001:1::/64 [110/20]
      via FE80::14, Ethernet0/3
 O   2001:AAAA:1001:2::/64 [110/20]
@@ -257,14 +237,18 @@ O   2001:AAAA:1001:7::/64 [110/20]
 O   2001:AAAA:1001:8::/64 [110/20]
      via FE80::5, Ethernet0/0
 O   2001:AAAA:1001:11::/64 [110/11]
-     via FE80::4, Ethernet0/1
      via FE80::5, Ethernet0/0
+     via FE80::4, Ethernet0/1
 O   2001:AAAA:1001:12::/64 [110/11]
-     via FE80::4, Ethernet0/1
      via FE80::5, Ethernet0/0
+     via FE80::4, Ethernet0/1
 O   2001:AAAA:1001:13::/64 [110/11]
-     via FE80::4, Ethernet0/1
      via FE80::5, Ethernet0/0
+     via FE80::4, Ethernet0/1
+OI  2001:AAAA:1001:14::1/128 [110/10]
+     via FE80::14, Ethernet0/3
+OI  2001:AAAA:1001:15::1/128 [110/10]
+     via FE80::15, Ethernet0/2
 ```
 
 #### Настроим OSPFv3 на L3 коммутаторах SW4 и SW5
@@ -293,7 +277,7 @@ interface Vlan11
 ##### Таблица маршрутизации SW4:
 
 ```
-SW4#show ipv6 route ospf
+SW4#show ipv6 route ospf 
 IPv6 Routing Table - default - 22 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, R - RIP, I1 - ISIS L1, I2 - ISIS L2
@@ -303,17 +287,11 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        OE2 - OSPF ext 2, ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2
        a - Application
 OI  ::/0 [110/21]
-     via FE80::13, Ethernet1/1
      via FE80::12, Ethernet1/0
-OI  2001:AAAA:101:1::/64 [110/30]
      via FE80::13, Ethernet1/1
-     via FE80::12, Ethernet1/0
-OI  2001:AAAA:301:1::/64 [110/30]
-     via FE80::13, Ethernet1/1
-     via FE80::12, Ethernet1/0
 OI  2001:AAAA:1001:1::/64 [110/30]
-     via FE80::13, Ethernet1/1
      via FE80::12, Ethernet1/0
+     via FE80::13, Ethernet1/1
 O   2001:AAAA:1001:2::/64 [110/20]
      via FE80::12, Ethernet1/0
 O   2001:AAAA:1001:3::/64 [110/20]
@@ -329,6 +307,12 @@ O   2001:AAAA:1001:8::/64 [110/20]
      via FE80::12, Ethernet1/0
 O   2001:AAAA:1001:10::/64 [110/20]
      via FE80::13, Ethernet1/1
+OI  2001:AAAA:1001:14::1/128 [110/20]
+     via FE80::12, Ethernet1/0
+     via FE80::13, Ethernet1/1
+OI  2001:AAAA:1001:15::1/128 [110/20]
+     via FE80::13, Ethernet1/1
+     via FE80::12, Ethernet1/0
 ```
 
 ##### Конфигурация SW5:
@@ -355,7 +339,7 @@ interface Vlan11
 ##### Таблица маршрутизации SW5:
 
 ```
-SW5#show ipv6 route ospf
+SW5#show ipv6 route ospf 
 IPv6 Routing Table - default - 22 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, R - RIP, I1 - ISIS L1, I2 - ISIS L2
@@ -367,12 +351,6 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
 OI  ::/0 [110/21]
      via FE80::12, Ethernet1/1
      via FE80::13, Ethernet1/0
-OI  2001:AAAA:101:1::/64 [110/30]
-     via FE80::12, Ethernet1/1
-     via FE80::13, Ethernet1/0
-OI  2001:AAAA:301:1::/64 [110/30]
-     via FE80::13, Ethernet1/0
-     via FE80::12, Ethernet1/1
 OI  2001:AAAA:1001:1::/64 [110/30]
      via FE80::12, Ethernet1/1
      via FE80::13, Ethernet1/0
@@ -391,6 +369,12 @@ O   2001:AAAA:1001:7::/64 [110/20]
      via FE80::12, Ethernet1/1
 O   2001:AAAA:1001:9::/64 [110/20]
      via FE80::13, Ethernet1/0
+OI  2001:AAAA:1001:14::1/128 [110/20]
+     via FE80::12, Ethernet1/1
+     via FE80::13, Ethernet1/0
+OI  2001:AAAA:1001:15::1/128 [110/20]
+     via FE80::13, Ethernet1/0
+     via FE80::12, Ethernet1/1
 ```
 
 #### Настроим OSPFv3 на маршрутизаторах R19 и R20
@@ -433,8 +417,8 @@ interface Ethernet0/0
 ##### Таблица маршрутизации R20:
 
 ```
-R20#show ipv6 route ospf
-IPv6 Routing Table - default - 15 entries
+R20#show ipv6 route ospf 
+IPv6 Routing Table - default - 17 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
        H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
@@ -442,7 +426,7 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
        O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
        ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, l - LISP
-OI  2001:AAAA:301:1::/64 [110/20]
+OI  2001:AAAA:1001:1::/64 [110/30]
      via FE80::15, Ethernet0/0
 OI  2001:AAAA:1001:2::/64 [110/30]
      via FE80::15, Ethernet0/0
@@ -460,11 +444,15 @@ OI  2001:AAAA:1001:9::/64 [110/30]
      via FE80::15, Ethernet0/0
 OI  2001:AAAA:1001:10::/64 [110/30]
      via FE80::15, Ethernet0/0
-OI  2001:AAAA:1001:11::/64 [110/31]
+OI  2001:AAAA:1001:11::/64 [110/20]
      via FE80::15, Ethernet0/0
 OI  2001:AAAA:1001:12::/64 [110/31]
      via FE80::15, Ethernet0/0
 OI  2001:AAAA:1001:13::/64 [110/31]
+     via FE80::15, Ethernet0/0
+OI  2001:AAAA:1001:14::1/128 [110/20]
+     via FE80::15, Ethernet0/0
+OI  2001:AAAA:1001:15::1/128 [110/10]
      via FE80::15, Ethernet0/0
 ```
 
