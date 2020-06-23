@@ -1,0 +1,141 @@
+Current configuration : 1862 bytes
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R22
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$vPNl$agVMlj313AAjDzrLjcxP0.
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ ip address 101.0.0.1 255.255.255.252
+ ipv6 address FE80::22 link-local
+ ipv6 address 2001:AAAA:101:1::1/64
+!
+interface Ethernet0/1
+ ip address 101.0.0.5 255.255.255.252
+ ipv6 address FE80::22 link-local
+ ipv6 address 2001:AAAA:101:2::1/64
+!
+interface Ethernet0/2
+ ip address 101.0.0.9 255.255.255.252
+ ipv6 address FE80::22 link-local
+ ipv6 address 2001:AAAA:101:3::1/64
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router bgp 101
+ bgp router-id 22.22.22.22
+ bgp log-neighbor-changes
+ network 101.0.0.0 mask 255.255.255.240
+ neighbor 101.0.0.2 remote-as 1001
+ neighbor 101.0.0.2 default-originate
+ neighbor 101.0.0.2 filter-list 1 out
+ neighbor 101.0.0.6 remote-as 301
+ neighbor 101.0.0.10 remote-as 520
+!
+ip forward-protocol nd
+!
+ip as-path access-list 1 deny .*
+!
+no ip http server
+no ip http secure-server
+ip route 101.0.0.0 255.255.255.240 Null0
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+banner motd ^CCAttention. Unauthorized users are not allowed.^C
+!
+line con 0
+ password cisco
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ login
+ transport input all
+line vty 1 4
+ password cisco
+ logging synchronous
+ login
+ transport input all
+!
+!
+end
