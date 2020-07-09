@@ -1,0 +1,238 @@
+Current configuration : 4351 bytes
+!
+! Last configuration change at 21:08:34 EET Thu Jul 9 2020
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R28
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$hsMe$T4JjLcRhKf9eeStuRrZOS0
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+no ipv6 cef
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+track 1 ip sla 1 reachability
+ delay down 10 up 5
+!         
+track 2 ip sla 2 reachability
+ delay down 10 up 5
+!         
+!         
+!         
+!         
+!         
+crypto isakmp policy 10
+ encr 3des
+ hash md5 
+ authentication pre-share
+ group 2  
+crypto isakmp key cisco address 0.0.0.0        
+!         
+!         
+crypto ipsec transform-set SET esp-des 
+ mode transport
+!         
+crypto ipsec profile DMVPN
+ set transform-set SET 
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+interface Tunnel1
+ ip address 192.168.200.3 255.255.255.0
+ ip mtu 1416
+ ip nhrp authentication Test
+ ip nhrp map 192.168.200.1 101.0.0.2
+ ip nhrp map multicast 101.0.0.2
+ ip nhrp network-id 1001
+ ip nhrp nhs 192.168.200.1
+ ip nhrp registration no-unique
+ ip ospf network broadcast
+ ip ospf hello-interval 30
+ ip ospf priority 0
+ tunnel source 52.0.0.26
+ tunnel destination 101.0.0.2
+ tunnel key 123
+ tunnel protection ipsec profile DMVPN
+!         
+interface Ethernet0/0
+ ip address 52.0.0.26 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::28 link-local
+ ipv6 address 2001:AAAA:502:7::2/64
+!         
+interface Ethernet0/1
+ ip address 52.0.0.30 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::28 link-local
+ ipv6 address 2001:AAAA:502:8::2/64
+!         
+interface Ethernet0/2
+ no ip address
+ ip nat inside
+ ip virtual-reassembly in
+!         
+interface Ethernet0/2.5
+ encapsulation dot1Q 5
+ ip address 101.1.0.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+ ip policy route-map PBR1
+ ipv6 address FE80::28 link-local
+ ipv6 address 2001:AAAA:1011:1::1/64
+!         
+interface Ethernet0/2.10
+ encapsulation dot1Q 10
+ ip address 101.1.1.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+ ip policy route-map PBR1
+ ipv6 address FE80::28 link-local
+ ipv6 address 2001:AAAA:1011:2::1/64
+!         
+interface Ethernet0/2.11
+ encapsulation dot1Q 11
+ ip address 101.1.2.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+ ip policy route-map PBR1
+ ipv6 address FE80::28 link-local
+ ipv6 address 2001:AAAA:1011:3::1/64
+!         
+interface Ethernet0/3
+ no ip address
+!         
+interface Ethernet1/0
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+!         
+router ospf 1
+ router-id 28.28.28.28
+ passive-interface Ethernet0/0
+ passive-interface Ethernet0/1
+ network 101.1.0.0 0.0.3.255 area 20
+ network 192.168.200.0 0.0.0.255 area 20
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+ip nat inside source list 1 interface Ethernet0/1 overload
+ip nat inside source list 2 interface Ethernet0/0 overload
+ip route 0.0.0.0 0.0.0.0 52.0.0.25
+ip route 0.0.0.0 0.0.0.0 52.0.0.29 100
+!         
+ip access-list standard ALL
+ permit 101.1.0.0 0.0.1.255
+ip access-list standard VLAN_10
+ permit 101.1.1.0 0.0.0.255
+ip access-list standard VLAN_11
+ permit 101.1.2.0 0.0.0.255
+ip access-list standard VPN
+ permit 100.1.0.0 0.0.3.255
+!         
+ip sla auto discovery
+ip sla 1  
+ icmp-echo 52.0.0.25 source-interface Ethernet0/0
+ frequency 15
+ip sla schedule 1 life forever start-time now
+ip sla 2  
+ icmp-echo 52.0.0.29 source-interface Ethernet0/1
+ frequency 15
+ip sla schedule 2 life forever start-time now
+access-list 1 permit 101.1.1.0 0.0.0.255
+access-list 2 permit 101.1.2.0 0.0.0.255
+!         
+route-map PBR1 permit 5
+ match ip next-hop VPN
+ set interface Tunnel1
+!         
+route-map PBR1 permit 10
+ match ip address VLAN_10
+ set ip next-hop verify-availability 52.0.0.25 1 track 1
+ set ip next-hop verify-availability 52.0.0.29 2 track 2
+!         
+route-map PBR1 permit 20
+ match ip address VLAN_11
+ set ip next-hop verify-availability 52.0.0.29 1 track 2
+ set ip next-hop verify-availability 52.0.0.25 2 track 1
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^CCAttention. Unauthorized users are not allowed.^C
+!         
+line con 0
+ password cisco
+ logging synchronous
+ login    
+line aux 0
+line vty 0 4
+ password cisco
+ logging synchronous
+ login    
+ transport input all
+!         
+!         
+end 
