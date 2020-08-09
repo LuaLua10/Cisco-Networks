@@ -114,6 +114,11 @@ R27#show ip nhrp brief
 ##### Конфигурация R28:
 
 ```
+interface Loopback1
+ ip address 28.28.28.28 255.255.255.255
+ ip nat outside
+ ip virtual-reassembly in
+ ip policy route-map PBR1
 interface Tunnel1
  ip address 192.168.200.3 255.255.255.0
  ip mtu 1416
@@ -126,16 +131,11 @@ interface Tunnel1
  ip ospf network broadcast
  ip ospf hello-interval 30
  ip ospf priority 0
- tunnel source 52.0.0.26
+ tunnel source Loop1
  tunnel destination 101.0.0.2
  tunnel key 123
 router ospf 1
  network 192.168.200.0 0.0.0.255 area 20
-ip access-list standard VPN
- permit 100.1.0.0 0.0.3.255
-route-map PBR1 permit 5
- match ip next-hop VPN
- set interface Tunnel1
 ```
 
 ##### Сводная информацию по туннелям R28:
