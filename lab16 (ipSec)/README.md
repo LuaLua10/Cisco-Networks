@@ -512,12 +512,6 @@ router ospf 1
  network 101.1.0.0 0.0.3.255 area 20
  network 192.168.200.0 0.0.0.255 area 20
 
-ip access-list standard VPN
- permit 100.1.0.0 0.0.3.255
-
-route-map PBR1 permit 5
- match ip route-source VPN
- set ip next-hop 192.168.200.1
 ```
 
 ##### Сводная информация о туннели R28:
