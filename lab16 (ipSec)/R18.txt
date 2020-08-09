@@ -1,6 +1,6 @@
-Current configuration : 2963 bytes
+Current configuration : 3408 bytes
 !
-! Last configuration change at 21:01:16 EET Sat Jul 4 2020
+! Last configuration change at 21:58:57 EET Thu Jul 9 2020
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -52,8 +52,23 @@ redundancy
 !         
 !         
 !         
+crypto isakmp policy 10
+ encr 3des
+ hash md5 
+ authentication pre-share
+ group 2  
+crypto isakmp key cisco address 30.1.0.2       
 !         
 !         
+crypto ipsec transform-set SET esp-des 
+ mode transport
+!         
+!         
+!         
+crypto map MAP1 10 ipsec-isakmp 
+ set peer 30.1.0.2
+ set transform-set SET 
+ match address 100
 !         
 !         
 !         
@@ -92,6 +107,7 @@ interface Ethernet0/2
  ip virtual-reassembly in
  ipv6 address FE80::18 link-local
  ipv6 address 2001:AAAA:502:5::2/64
+ crypto map MAP1
 !         
 interface Ethernet0/3
  ip address 52.0.0.22 255.255.255.252
@@ -131,12 +147,15 @@ ip route 16.16.16.16 255.255.255.255 20.42.0.6
 ip route 17.17.17.17 255.255.255.255 20.42.0.2
 ip route 20.42.0.0 255.255.252.0 Null0
 ip route 20.42.0.8 255.255.255.252 20.42.0.6
+ip route 30.1.0.0 255.255.255.252 Ethernet0/2
 ip route 32.32.32.32 255.255.255.255 20.42.0.6
+ip route 100.1.0.0 255.255.252.0 Tunnel1
 !         
 !         
 ip prefix-list 1 seq 5 permit 20.42.0.0/22
 ip prefix-list 1 seq 10 deny 0.0.0.0/0 le 32
 access-list 2 permit 20.42.0.0 0.0.3.255
+access-list 100 permit gre host 52.0.0.18 host 30.1.0.2
 !         
 !         
 !         
@@ -161,4 +180,4 @@ line vty 0 4
  transport input all
 !         
 !         
-end 
+end  

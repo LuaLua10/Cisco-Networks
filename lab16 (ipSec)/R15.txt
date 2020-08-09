@@ -1,8 +1,8 @@
-Current configuration : 3891 bytes
+Current configuration : 4291 bytes
 !
-! Last configuration change at 21:01:16 EET Sat Jul 4 2020
-! NVRAM config last updated at 21:01:48 EET Sat Jul 4 2020
-! NVRAM config last updated at 21:01:48 EET Sat Jul 4 2020
+! Last configuration change at 21:59:42 EET Thu Jul 9 2020
+! NVRAM config last updated at 21:59:46 EET Thu Jul 9 2020
+! NVRAM config last updated at 21:59:46 EET Thu Jul 9 2020
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -55,8 +55,23 @@ redundancy
 !         
 !         
 !         
+crypto isakmp policy 10
+ encr 3des
+ hash md5 
+ authentication pre-share
+ group 2  
+crypto isakmp key cisco address 52.0.0.18      
 !         
 !         
+crypto ipsec transform-set SET esp-des 
+ mode transport
+!         
+!         
+!         
+crypto map MAP1 10 ipsec-isakmp 
+ set peer 52.0.0.18
+ set transform-set SET 
+ match address 100
 !         
 !         
 !         
@@ -100,6 +115,7 @@ interface Ethernet0/2
  ip virtual-reassembly in
  ipv6 address FE80::15 link-local
  ipv6 address 2001:AAAA:301:1::2/64
+ crypto map MAP1
 !         
 interface Ethernet0/3
  ip address 100.1.0.21 255.255.255.252
@@ -162,12 +178,14 @@ no ip http secure-server
 ip nat pool N-POOL1 100.1.0.254 100.1.0.254 prefix-length 30
 ip nat inside source list 2 pool N-POOL1 overload
 ip nat inside source static 100.1.0.2 100.1.0.253
+ip route 20.42.0.0 255.255.252.0 Tunnel1
 ip route 100.1.0.0 255.255.252.0 Null0
 !         
 !         
 ip prefix-list DEAD_area101 seq 5 deny 100.1.0.0/30
 ip prefix-list DEAD_area101 seq 10 permit 0.0.0.0/0 le 32
 access-list 2 permit 100.1.0.0 0.0.3.255
+access-list 100 permit gre host 30.1.0.2 host 52.0.0.18
 ipv6 router ospf 10
  router-id 15.15.15.15
  area 10 stub
@@ -204,4 +222,4 @@ line vty 0 4
 !         
 ntp server 100.1.0.18
 !         
-end 
+end  
